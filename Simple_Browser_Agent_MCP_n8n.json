@@ -1,0 +1,127 @@
+{
+  "name": "Simple_Browser_Agent_MCP",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "2bf07a33-50ec-430f-8cc4-2a9ef12afad0",
+      "name": "When chat message received",
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "position": [-960, 780],
+      "webhookId": "ea30ba23-547e-4998-aa65-1f2df9e0aea5",
+      "typeVersion": 1.1
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.5-flash-preview-04-17",
+        "options": {}
+      },
+      "id": "6810d6b7-1b4e-4ba5-8fed-ec367eff3c8f",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "position": [-740, 1000],
+      "typeVersion": 1,
+      "credentials": {
+        "googlePalmApi": {
+          "id": "R4FZ996DNrUwwpuA",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "67468190-ed96-420d-961e-ee6573a9eb88",
+      "name": "Simple Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "position": [-620, 1000],
+      "typeVersion": 1.3
+    },
+    {
+      "parameters": {
+        "sseEndpoint": "http://localhost:8931/sse"
+      },
+      "id": "07abadca-8d4e-4069-8f5f-6c080863750b",
+      "name": "MCP Client",
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "position": [-500, 1000],
+      "typeVersion": 1,
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "d1392b65-366d-4b96-b35a-abc5b2aaaa0a",
+      "name": "Personal Assistant",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "position": [-708, 780],
+      "typeVersion": 1.9,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "onError": "continueRegularOutput"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "Personal Assistant",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Personal Assistant",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Personal Assistant",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "Personal Assistant",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Personal Assistant": {
+      "main": [[]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e8b92957-2319-499a-afe3-fd5930cb5b32",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "b560b2ed3a3dd58aee1fe85fb057d1c6c99352032cb2daa6a657e2c82e1f9a9b"
+  },
+  "id": "BFpy7hzS6MaJ0Qt2",
+  "tags": []
+}
